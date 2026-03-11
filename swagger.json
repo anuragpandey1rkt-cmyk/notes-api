@@ -1,0 +1,150 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Notes Management API",
+        "version": "1.0.0",
+        "description": "A REST API for managing personal notes with authentication"
+    },
+    "paths": {
+        "/register": {
+            "post": {
+                "summary": "Register a new user",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "role": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "summary": "Login and get tokens",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "username": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Returns access and refresh tokens"
+                    }
+                }
+            }
+        },
+        "/refresh": {
+            "post": {
+                "summary": "Get new access token using refresh token",
+                "responses": {
+                    "200": {
+                        "description": "Returns new access token"
+                    }
+                }
+            }
+        },
+        "/notes": {
+            "get": {
+                "summary": "Get all notes",
+                "responses": {
+                    "200": {
+                        "description": "List of notes"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new note",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Note created"
+                    }
+                }
+            }
+        },
+        "/notes/{id}": {
+            "put": {
+                "summary": "Update a note",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note updated"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a note",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Note deleted"
+                    }
+                }
+            }
+        }
+    }
+}
