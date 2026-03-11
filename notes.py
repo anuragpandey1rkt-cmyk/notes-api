@@ -35,13 +35,24 @@ def create_note():
 def get_notes():
     current_user = get_current_user()
 
+    # get query params
+    page = request.args.get("page", 1, type=int)
+    per_page = request.args.get("per_page", 5, type=int)
+    search = request.args.get("search", "", type=str)
+
     if current_user["role"] == "admin":
-        all_notes = Note.query.all()
+        query = Note.query
     else:
-        all_notes = Note.query.filter_by(user_id=current_user["id"]).all()
+        query = Note.query.filter_by(user_id=current_user["id"])
+
+    # search by title if provided
+    if search:
+        query = query.filter(Note.title.ilike(f"%{search}%"))
+
+    paginated = query.paginate(page=page, per_page=per_page, error_out=False)
 
     result = []
-    for note in all_notes:
+    for note in paginated.items:
         result.append({
             "id": note.id,
             "title": note.title,
@@ -51,7 +62,13 @@ def get_notes():
             "user_id": note.user_id
         })
 
-    return jsonify(result), 200
+    return jsonify({
+        "notes": result,
+        "total": paginated.total,
+        "page": paginated.page,
+        "pages": paginated.pages,
+        "per_page": paginated.per_page
+    }), 200
 
 
 @notes.route("/notes/<int:note_id>", methods=["PUT"])
